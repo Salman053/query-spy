@@ -3,13 +3,7 @@
     <p>Real-time database query debugging with N+1 detection for Laravel.</p>
 </div>
 
-<p align="center">
-    <a href="https://packagist.org/packages/muhammad-salman-khan/eloquent-query-spy"><img src="https://img.shields.io/packagist/v/muhammad-salman-khan/eloquent-query-spy.svg?style=flat-square" alt="Packagist"></a>
-    <a href="https://packagist.org/packages/muhammad-salman-khan/eloquent-query-spy"><img src="https://img.shields.io/packagist/php-v/muhammad-salman-khan/eloquent-query-spy.svg?style=flat-square" alt="PHP from Packagist"></a>
-    <a href="https://badge.laravel.cloud"><img src="https://badge.laravel.cloud/badge/muhammad-salman-khan/eloquent-query-spy?style=flat" alt="Laravel versions"></a>
-    <a href="https://github.com/muhammad-salman-khan/eloquent-query-spy/actions"><img alt="GitHub Workflow Status (main)" src="https://img.shields.io/github/actions/workflow/status/muhammad-salman-khan/eloquent-query-spy/tests.yml?branch=main&label=Tests&style=flat-square"></a>
-    <a href="https://packagist.org/packages/muhammad-salman-khan/eloquent-query-spy"><img src="https://img.shields.io/packagist/dt/muhammad-salman-khan/eloquent-query-spy.svg?style=flat-square" alt="Total Downloads"></a>
-</p>
+
 
 ---
 
