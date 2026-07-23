@@ -1,13 +1,13 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "muhammad-salman-khan/laravel-query-spy",
+    "name": "salman053/query-spy",
     "description": "Real-time Eloquent query debugging tool with N+1 detection, backtrace tracking, and performance insights for Laravel.",
     "keywords": [
         "laravel",
-        "muhammad-salman-khan",
+        "salman053",
         "eloquent-query-spy"
     ],
-    "homepage": "https://github.com/muhammad-salman-khan/laravel-query-spy",
+    "homepage": "https://github.com/salman053/query-spy",
     "license": "MIT",
     "authors": [
         {
