@@ -2,24 +2,24 @@
 
 namespace Workbench\Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Workbench\Database\Factories\UserFactory;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // UserFactory::new()->times(10)->create();
+        DB::table('users')->insert(['name' => 'Alice', 'email' => 'alice@test.com', 'password' => Hash::make('password'), 'created_at' => now(), 'updated_at' => now()]);
+        DB::table('users')->insert(['name' => 'Bob', 'email' => 'bob@test.com', 'password' => Hash::make('password'), 'created_at' => now(), 'updated_at' => now()]);
+        DB::table('users')->insert(['name' => 'Charlie', 'email' => 'charlie@test.com', 'password' => Hash::make('password'), 'created_at' => now(), 'updated_at' => now()]);
 
-        UserFactory::new()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        DB::table('posts')->insert(['user_id' => 1, 'title' => 'Alice Post 1', 'created_at' => now(), 'updated_at' => now()]);
+        DB::table('posts')->insert(['user_id' => 1, 'title' => 'Alice Post 2', 'created_at' => now(), 'updated_at' => now()]);
+        DB::table('posts')->insert(['user_id' => 2, 'title' => 'Bob Post 1', 'created_at' => now(), 'updated_at' => now()]);
+
+        DB::table('comments')->insert(['post_id' => 1, 'body' => 'Great post!', 'created_at' => now(), 'updated_at' => now()]);
+        DB::table('comments')->insert(['post_id' => 1, 'body' => 'Thanks!', 'created_at' => now(), 'updated_at' => now()]);
+        DB::table('comments')->insert(['post_id' => 3, 'body' => 'Nice!', 'created_at' => now(), 'updated_at' => now()]);
     }
 }

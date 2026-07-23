@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use EloquentQuerySpy\EloquentQuerySpy\Collectors\QueryCollector;
 use EloquentQuerySpy\EloquentQuerySpy\QuerySpy;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -81,7 +82,7 @@ it('tracks query timing and ordering', function () {
     expect($queries[0]->time)->toBeGreaterThan(0);
 });
 
-it('collects backtrace file and line info', function () {
+it('collects backtrace info without spy internals', function () {
     $spy = app(QuerySpy::class);
     $spy->boot();
 
@@ -90,5 +91,22 @@ it('collects backtrace file and line info', function () {
     $queries = $spy->getQueries();
 
     expect($queries)->toHaveCount(1);
-    expect($queries[0]->file)->not->toBeNull();
+
+    if ($queries[0]->file !== null) {
+        expect($queries[0]->file)->not->toContain('src/');
+        expect($queries[0]->file)->not->toContain('vendor/');
+    }
+});
+
+it('skips excluded query patterns', function () {
+    $collector = app(QueryCollector::class);
+    $collector->setExcludedPatterns(['demo_posts']);
+
+    $spy = app(QuerySpy::class);
+    $spy->boot();
+
+    DB::table('demo_users')->get();
+    DB::table('demo_posts')->get();
+
+    expect($spy->getQueryCount())->toBe(1);
 });

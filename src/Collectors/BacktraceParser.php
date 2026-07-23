@@ -6,13 +6,20 @@ namespace EloquentQuerySpy\EloquentQuerySpy\Collectors;
 
 class BacktraceParser
 {
-    private const string VENDOR_WIN = 'vendor\\';
+    /** @var list<string> */
+    private const array PACKAGE_CLASS_PREFIXES = [
+        'EloquentQuerySpy\\EloquentQuerySpy\\',
+    ];
 
-    private const string VENDOR_UNIX = 'vendor/';
+    /** @var list<string> */
+    private const array SKIP_CLASS_PREFIXES = [
+        'Illuminate\\Database\\',
+        'Illuminate\\Events\\',
+        'Pest\\',
+        'PHPUnit\\',
+    ];
 
     /**
-     * Parse a debug_backtrace array to find the application caller.
-     *
      * @param  list<array{file?: string, line?: int, class?: string, function?: string, type?: string}>  $backtrace
      * @return array{0: string|null, 1: int|null, 2: string|null}
      */
@@ -56,7 +63,20 @@ class BacktraceParser
      */
     private function isInternalFrame(array $frame, string $projectPath): bool
     {
-        $file = $frame['file'] ?? '';
+        $file = (string) ($frame['file'] ?? '');
+        $class = (string) ($frame['class'] ?? '');
+
+        foreach (self::PACKAGE_CLASS_PREFIXES as $prefix) {
+            if (str_starts_with($class, $prefix)) {
+                return true;
+            }
+        }
+
+        foreach (self::SKIP_CLASS_PREFIXES as $prefix) {
+            if (str_starts_with($class, $prefix)) {
+                return true;
+            }
+        }
 
         if ($file === '') {
             return false;
@@ -65,11 +85,20 @@ class BacktraceParser
         $normalizedFile = str_replace('\\', '/', $file);
         $normalizedProject = str_replace('\\', '/', $projectPath);
 
-        if (! str_starts_with($normalizedFile, $normalizedProject)) {
+        if (str_contains($normalizedFile, '/vendor/')) {
             return true;
         }
 
-        if (str_contains($normalizedFile, self::VENDOR_WIN) || str_contains($normalizedFile, self::VENDOR_UNIX)) {
+        if (
+            ! str_starts_with($normalizedFile, $normalizedProject)
+            || (strlen($normalizedFile) > strlen($normalizedProject) && $normalizedFile[strlen($normalizedProject)] !== '/')
+        ) {
+            return true;
+        }
+
+        $spyDir = str_replace('\\', '/', __DIR__);
+
+        if (str_starts_with($normalizedFile, $spyDir)) {
             return true;
         }
 
@@ -103,19 +132,48 @@ class BacktraceParser
 
     private function normalizePath(string $path, string $projectPath): string
     {
-        $path = str_replace('\\', '/', $path);
-        $projectPath = str_replace('\\', '/', $projectPath);
+        $normalizedPath = str_replace('\\', '/', $path);
+        $normalizedProject = str_replace('\\', '/', $projectPath);
 
-        if (str_starts_with($path, $projectPath)) {
-            return substr($path, strlen($projectPath) + 1);
+        if (str_starts_with($normalizedPath, $normalizedProject)) {
+            $relative = substr($normalizedPath, strlen($normalizedProject));
+            $relative = ltrim($relative, '/\\');
+
+            $vendorPos = strpos($relative, 'vendor/');
+
+            if ($vendorPos !== false) {
+                return substr($relative, $vendorPos + 7);
+            }
+
+            return $relative;
         }
 
-        return $path;
+        return $normalizedPath;
     }
 
     private function detectProjectPath(): string
     {
+        if (function_exists('base_path')) {
+            $base = base_path();
+
+            return str_replace('\\', '/', $base);
+        }
+
         $base = __DIR__;
+        $parts = explode(DIRECTORY_SEPARATOR, $base);
+
+        $vendorIndex = null;
+        foreach ($parts as $i => $part) {
+            if ($part === 'vendor') {
+                $vendorIndex = $i;
+
+                break;
+            }
+        }
+
+        if ($vendorIndex !== null) {
+            return implode(DIRECTORY_SEPARATOR, array_slice($parts, 0, $vendorIndex));
+        }
 
         for ($i = 0; $i < 5; $i++) {
             $base = dirname($base);

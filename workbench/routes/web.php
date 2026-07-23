@@ -16,28 +16,34 @@ Route::get('/spy', function () {
 
     foreach ($users as $user) {
         foreach ($user->posts as $post) {
-            echo $post->title;
+            foreach ($post->comments as $comment) {
+                echo "<p>User: {$user->name} | Post: {$post->title} | Comment: {$comment->body}</p>";
+            }
         }
     }
 
     $report = $spy->analyse();
 
-    return '<pre>'.json_encode($report, JSON_PRETTY_PRINT).'</pre>';
+    return response(json_encode($report, JSON_PRETTY_PRINT))
+        ->header('Content-Type', 'application/json');
 });
 
 Route::get('/spy-eager', function () {
     $spy = app(QuerySpy::class);
     $spy->boot();
 
-    $users = User::with('posts')->get();
+    $users = User::with('posts.comments')->get();
 
     foreach ($users as $user) {
         foreach ($user->posts as $post) {
-            echo $post->title;
+            foreach ($post->comments as $comment) {
+                echo "<p>User: {$user->name} | Post: {$post->title} | Comment: {$comment->body}</p>";
+            }
         }
     }
 
     $report = $spy->analyse();
 
-    return '<pre>'.json_encode($report, JSON_PRETTY_PRINT).'</pre>';
+    return response(json_encode($report, JSON_PRETTY_PRINT))
+        ->header('Content-Type', 'application/json');
 });

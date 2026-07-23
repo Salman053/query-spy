@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Model
 {
+    protected $table = 'users';
+
     protected $fillable = ['name'];
 
     public function posts(): HasMany
