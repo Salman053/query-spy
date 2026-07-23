@@ -5,7 +5,7 @@ Real-time database query debugging with N+1 detection for Laravel. Captures ever
 ## Installation
 
 ```bash
-composer require salman053/query-spy
+composer require salman053/laravel-query-spy
 ```
 
 Laravel auto-discovers the service provider. Optionally publish the config:

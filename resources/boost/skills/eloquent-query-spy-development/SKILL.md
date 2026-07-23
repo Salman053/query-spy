@@ -13,7 +13,7 @@ Use this skill when a Laravel application needs to integrate the Eloquent Query 
 
 ## Primary Goal
 
-- apply the `salman053/query-spy` package's public API in the smallest correct way
+- apply the `salman053/laravel-query-spy` package's public API in the smallest correct way
 
 ## Workflow
 
