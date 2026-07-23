@@ -1,0 +1,120 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "muhammad-salman-khan/eloquent-query-spy",
+    "description": "Real-time Eloquent query debugging tool with N+1 detection, backtrace tracking, and performance insights for Laravel.",
+    "keywords": [
+        "laravel",
+        "muhammad-salman-khan",
+        "eloquent-query-spy"
+    ],
+    "homepage": "https://github.com/muhammad-salman-khan/eloquent-query-spy",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Muhammad Salman Khan",
+            "email": "salmankhanm859@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "illuminate/collections": "^12.0||^13.0",
+        "illuminate/config": "^12.0||^13.0",
+        "illuminate/console": "^12.0||^13.0",
+        "illuminate/container": "^12.0||^13.0",
+        "illuminate/contracts": "^12.0||^13.0",
+        "illuminate/database": "^12.0||^13.0",
+        "illuminate/http": "^12.0||^13.0",
+        "illuminate/support": "^12.0||^13.0"
+    },
+    "require-dev": {
+        "barryvdh/laravel-debugbar": "^4.4",
+        "larastan/larastan": "^3.9",
+        "laravel/agent-detector": "^2.0",
+        "laravel/chisel": "^0.1",
+        "laravel/pao": "^1.0",
+        "laravel/pint": "^1.29",
+        "laravel/prompts": "^0.3",
+        "orchestra/testbench": "^10.0||^11.0",
+        "pestphp/pest": "^4.6",
+        "pestphp/pest-plugin-laravel": "^4.1",
+        "pestphp/pest-plugin-type-coverage": "^4.0",
+        "phpstan/extension-installer": "^1.4"
+    },
+    "suggest": {
+        "barryvdh/laravel-debugbar": "Display Query Spy data in the Laravel Debugbar toolbar."
+    },
+    "autoload": {
+        "psr-4": {
+            "EloquentQuerySpy\\EloquentQuerySpy\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "EloquentQuerySpy\\EloquentQuerySpy\\Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@clear",
+            "@prepare"
+        ],
+        "prepare": [
+            "@php vendor/bin/testbench package:discover --ansi"
+        ],
+        "build": [
+            "@php vendor/bin/testbench workbench:build --ansi"
+        ],
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@build",
+            "@php vendor/bin/testbench serve --ansi"
+        ],
+        "lint": [
+            "vendor/bin/pint --parallel"
+        ],
+        "lint:check": [
+            "vendor/bin/pint --parallel --test"
+        ],
+        "analyse": [
+            "vendor/bin/phpstan analyse"
+        ],
+        "test:types": [
+            "vendor/bin/pest --type-coverage --min=100"
+        ],
+        "test:unit": [
+            "vendor/bin/pest --parallel"
+        ],
+        "test": [
+            "@analyse",
+            "@lint:check",
+            "@test:types",
+            "@test:unit"
+        ],
+        "clear": [
+            "@php vendor/bin/testbench package:purge-skeleton --ansi"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "EloquentQuerySpy\\EloquentQuerySpy\\EloquentQuerySpyServiceProvider"
+            ],
+            "aliases": {
+                "QuerySpy": "EloquentQuerySpy\\EloquentQuerySpy\\Facades\\QuerySpy"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
