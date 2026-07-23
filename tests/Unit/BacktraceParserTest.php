@@ -91,7 +91,7 @@ it('handles frames without file info', function () {
     expect($caller)->toBe('SomeClass::someFunction');
 });
 
-it('skips frames outside the project path', function () {
+it('does not require frames to be inside the project path', function () {
     $parser = new BacktraceParser;
 
     $backtrace = [
@@ -111,6 +111,7 @@ it('skips frames outside the project path', function () {
 
     [$file, $line, $caller] = $parser->parse($backtrace, '/project');
 
-    expect($file)->toBe('app/Services/UserService.php');
-    expect($line)->toBe(10);
+    expect($file)->toBe('/usr/share/php/SomeInternal.php');
+    expect($line)->toBe(50);
+    expect($caller)->toBe('internalFunc');
 });

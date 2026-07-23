@@ -83,26 +83,23 @@ class BacktraceParser
         }
 
         $normalizedFile = str_replace('\\', '/', $file);
-        $normalizedProject = str_replace('\\', '/', $projectPath);
 
         if (str_contains($normalizedFile, '/vendor/')) {
             return true;
         }
 
-        if (
-            ! str_starts_with($normalizedFile, $normalizedProject)
-            || (strlen($normalizedFile) > strlen($normalizedProject) && $normalizedFile[strlen($normalizedProject)] !== '/')
-        ) {
-            return true;
-        }
-
-        $spyDir = str_replace('\\', '/', __DIR__);
-
-        if (str_starts_with($normalizedFile, $spyDir)) {
+        if ($this->isInsideSpySourceDir($normalizedFile)) {
             return true;
         }
 
         return false;
+    }
+
+    private function isInsideSpySourceDir(string $normalizedFile): bool
+    {
+        $srcDir = str_replace('\\', '/', dirname(__DIR__));
+
+        return str_starts_with($normalizedFile, $srcDir);
     }
 
     /**
